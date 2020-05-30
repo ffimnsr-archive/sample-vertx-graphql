@@ -1,0 +1,97 @@
+
+version: "3.7"
+services:
+    keycloak:
+        image: jboss/keycloak:10.0.1
+        container_name: keycloak-server
+        ports:
+            - "8080:8080"
+        environment:
+            - KEYCLOAK_USER=admin
+            - KEYCLOAK_PASSWORD=admin
+            - DB_VENDOR=postgres
+            - DB_ADDR=postgres-server
+            - DB_PORT=5432
+            - DB_DATABASE=sesame_keycloak
+            - DB_USER=postgres
+            - DB_PASSWORD=postgres
+        depends_on:
+            - postgres
+        networks:
+            - sesame-graph
+    postgres:
+        image: postgres:9.6
+        container_name: postgres-server
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_DB=sesame_keycloak
+            - PGDATA=/var/lib/postgresql/data/pgdata            
+        networks:
+            - sesame-graph
+    mariadb:
+        image: mariadb:10.4.13
+        container_name: mariadb-server
+        volumes:
+            - mariadb-data:/var/lib/mysql
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=mariadb
+            - MYSQL_DATABASE=bitnami_phabricator
+            - MYSQL_USER=mariadb
+            - MYSQL_PASSWORD=mariadb
+        networks:
+            - sesame-graph
+    phabricator:
+        image: bitnami/phabricator:2020.20.0
+        container_name: phabricator-server
+        volumes:
+            - phabricator-data:/bitnami
+        ports:
+            - "80:80"
+            - "443:443"
+        environment:
+            - PHABRICATOR_HOST=192.168.99.100
+            - PHABRICATOR_USERNAME=admin
+            - PHABRICATOR_PASSWORD=PScnArRymHJu2pm354c
+            - PHABRICATOR_EMAIL=e@se-same.com
+            - MARIADB_USER=root
+            - MARIADB_PASSWORD=mariadb
+            - MARIADB_HOST=mariadb-server
+            - MARIADB_PORT_NUMBER=3306
+        depends_on: 
+            - mariadb
+        networks:
+            - sesame-graph
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: rabbitmq-server
+        ports:
+            - "15672:15672"
+            - "5672:5672"
+        networks:
+            - sesame-graph
+    mailcatcher:
+        build:
+            context: .
+            dockerfile: ./development/mailcatcher/Dockerfile
+        image: mailcatcher:0.7.1
+        container_name: mailcatcher-server
+        ports:
+            - "1025:1025"
+            - "1080:1080"
+        networks:
+            - sesame-graph
+            
+networks:
+    sesame-graph:
+
+volumes:
+    postgres-data:
+    mariadb-data:
+    phabricator-data:
