@@ -1,15 +1,16 @@
-package com.se_same.services.graph.models;
-
-import com.google.common.collect.Lists;
-import io.vertx.reactivex.sqlclient.Row;
-import io.vertx.reactivex.sqlclient.RowSet;
+package org.vastorigins.sesame.graph.models;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
+
+import io.vertx.reactivex.sqlclient.Row;
+import io.vertx.reactivex.sqlclient.RowSet;
+import io.vertx.sqlclient.data.Numeric;
+
 public class Organization {
-  public UUID getId() {
+  public Numeric getId() {
     return id;
   }
 
@@ -37,7 +38,7 @@ public class Organization {
     return insertedById;
   }
 
-  private final UUID id;
+  private final Numeric id;
   private final String name;
   private final String description;
   private final boolean isPremium;
@@ -45,11 +46,12 @@ public class Organization {
   private final int manageById;
   private final int insertedById;
 
-  public Organization(UUID id, String name, String description) {
+  public Organization(final Numeric id, final String name, final String description) {
     this(id, name, description, false, 0, 0, 0);
   }
 
-  public Organization(UUID id, String name, String description, boolean isPremium, int type, int manageById, int insertedById) {
+  public Organization(final Numeric id, final String name, final String description, final boolean isPremium,
+      final int type, final int manageById, final int insertedById) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -59,15 +61,11 @@ public class Organization {
     this.insertedById = insertedById;
   }
 
-  public static Organization fromRow(Row aRow) {
-    return new Organization(
-      aRow.getUUID("id"),
-      aRow.getString("name"),
-      aRow.getString("description")
-     );
+  public static Organization fromRow(final Row aRow) {
+    return new Organization(aRow.get(Numeric.class, 0), aRow.getString("name"), aRow.getString("description"));
   }
 
-  public static List<Organization> fromRowSet(RowSet<Row> aRows) {
+  public static List<Organization> fromRowSet(final RowSet<Row> aRows) {
     return Lists.newArrayList(aRows)
       .stream()
       .map(Organization::fromRow)

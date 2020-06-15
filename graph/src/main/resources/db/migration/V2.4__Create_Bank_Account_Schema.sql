@@ -1,6 +1,6 @@
-CREATE TABLE IF NOT EXISTS "bank_accounts" (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NULL DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS bank_accounts (
+  id BIGINT UNSIGNED PRIMARY KEY DEFAULT UUID_SHORT(),
+  user_id BIGINT UNSIGNED NULL DEFAULT NULL,
   account_name VARCHAR (100) NOT NULL,
   account_no VARCHAR (60) NOT NULL,
   bank_address TEXT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "bank_accounts" (
   bank_routing_number VARCHAR (45) NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL,
-  CONSTRAINT "bank_accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user_clues" ("id") ON UPDATE NO ACTION ON DELETE SET NULL
+  CONSTRAINT bank_accounts_user_id_fkey FOREIGN KEY (user_id) REFERENCES user_clues (id) ON UPDATE NO ACTION ON DELETE SET NULL
 );
 
-CREATE INDEX "bank_accounts_index" ON "bank_accounts" ("user_id");
+CREATE INDEX bank_accounts_index ON bank_accounts (user_id);

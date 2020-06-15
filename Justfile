@@ -5,3 +5,6 @@ default:
 
 migrate:
     cd {{invocation_directory()}}; .\mvnw.cmd migrate
+
+svc-kc:
+    docker-compose up mariadb keycloak

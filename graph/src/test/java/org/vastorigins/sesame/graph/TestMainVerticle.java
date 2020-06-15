@@ -1,4 +1,4 @@
-package com.se_same.services.graph;
+package org.vastorigins.sesame.graph;
 
 import io.vertx.core.Vertx;
 import io.vertx.junit5.VertxExtension;

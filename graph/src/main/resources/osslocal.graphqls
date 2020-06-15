@@ -1,0 +1,36 @@
+schema {
+  query: QueryType
+  subscription: SubscriptionType
+}
+
+type QueryType {
+  organizations: [Organization]
+  organization(id: ID!): Organization
+  users: [UserClue]
+  user(id: ID!): User
+}
+
+type SubscriptionType {
+  organizations: [Organization]
+  users: [UserClue]
+}
+
+type NodeEntity {
+  id: ID!
+}
+
+type Organization implements NodeEntity {
+  id: ID!
+  name: String
+  description: String
+  managedBy: UserClue
+  insertedBy: UserClue
+}
+
+type UserClue {
+  id: ID!
+  globalId: String
+  username: String
+  avatar: String
+}
+
